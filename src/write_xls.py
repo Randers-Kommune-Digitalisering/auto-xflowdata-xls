@@ -4,6 +4,7 @@ import shutil
 import os
 
 def create_workbook():
+
     # Create filename using timestamp
     filename = time.strftime("%Y%m%d-%H%M%S") + ".xlsx"
 
@@ -16,33 +17,48 @@ def create_workbook():
 
     return False
 
-def write_to_file(filename):
-    if filename == False:
+
+def write_to_file(filename, data: list):
+
+    # Check if filename is valid and data is a list
+    if filename == False or type(data) != list:
         return False
 
     # Open workbook
     workbook = openpyxl.load_workbook(filename)
-    
-    # Select the first sheet
-    worksheet = workbook.active
 
-    # Assigned data directly to cells
-    worksheet['A1'] = "Hi"
+    # Set initial worksheet id
+    worksheet_id = 0
 
-    # Read the cell value
-    row_number = 0
-    column_number = 0
-    cell_value = worksheet.cell(row=row_number + 1, column=column_number + 1).value
-    print(cell_value)
-    
+    # Loop through all the dicts in data
+    for item in data:
+
+        # Check if respective worksheet exists
+        if not workbook.worksheets[worksheet_id]:
+            print(f'Worksheet with id {worksheet_id} not found')
+            break
+        
+        # Select the worksheet to edit
+        worksheet = workbook.worksheets[worksheet_id]
+
+        # Write data to cells
+        for key in item:
+            worksheet[key] = item[key]
+
+        # Increment the worksheet id
+        worksheet_id += 1
+
     # Save the workbook
+    workbook.save(filename)
     workbook.close()
+
+    return True
 
 
 # Test functions
 
-if os.path.exists("demo.xlsx"):
-    write_to_file(create_workbook())
+if os.path.exists('demo.xlsx'):
+    print( write_to_file(create_workbook(), [{'A1': 'Hi', 'A2': 'there'}]) )
 
 else:
-    print("File not found")
+    print('File not found')
