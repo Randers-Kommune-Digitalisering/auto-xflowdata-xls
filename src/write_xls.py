@@ -1,9 +1,27 @@
 import openpyxl
 import time
+import shutil
+import os
 
-def write_to_file():
+def create_workbook():
+    # Create filename using timestamp
+    filename = time.strftime("%Y%m%d-%H%M%S") + ".xlsx"
+
+    # Copy the template file
+    shutil.copy2("demo.xlsx", filename)
+    
+    # Check if the file was copied successfully
+    if os.path.exists(filename):
+        return filename
+
+    return False
+
+def write_to_file(filename):
+    if filename == False:
+        return False
+
     # Open workbook
-    workbook = openpyxl.load_workbook("demo.xlsx")
+    workbook = openpyxl.load_workbook(filename)
     
     # Select the first sheet
     worksheet = workbook.active
@@ -20,4 +38,11 @@ def write_to_file():
     # Save the workbook
     workbook.close()
 
-write_to_file()
+
+# Test functions
+
+if os.path.exists("demo.xlsx"):
+    write_to_file(create_workbook())
+
+else:
+    print("File not found")
