@@ -6,7 +6,7 @@ from flask import Blueprint, Response, request
 
 from utils.config import POD_NAME
 from utils.logging import is_ready_gauge, last_updated_gauge, job_start_counter, job_complete_counter, job_duration_summary
-from write_xls import write_to_workbook
+from write_xls import write_to_workbook, create_workbook
 
 logger = logging.getLogger(__name__)
 api_endpoints = Blueprint('api', __name__, url_prefix='/api')
