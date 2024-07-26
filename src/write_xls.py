@@ -53,8 +53,11 @@ def write_to_workbook(filename, data: list):
     workbook.save(filename)
     workbook.close()
 
-    return True
+    # Read the file data
+    with open(filename, 'rb') as file:
+        file_data = file.read()
 
+    return file_data
 
 # Test functions
 
