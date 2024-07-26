@@ -19,7 +19,7 @@ is_ready_gauge.labels(error_type=None, job_name=POD_NAME).set(1)
 last_updated_gauge.set_to_current_time()
 
 @api_endpoints.route('/xflow', methods=['GET', 'POST'])
-def example():
+def xflow():
     if request.method == 'POST':
         if request.headers.get('Content-Type') == 'application/json':
             payload = request.get_json()
