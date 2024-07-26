@@ -42,5 +42,5 @@ def example():
             return Response(f'You posted: {payload}', status=200)
         else:
             return Response('Content-Type must be application/json', status=400)
-    else
+    else:
         return Response('Method must be POST', status=400)
