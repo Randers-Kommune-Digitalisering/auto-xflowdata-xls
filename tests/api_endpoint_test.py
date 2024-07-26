@@ -25,14 +25,14 @@ def client(app):
 @patch('api_endpoints.export')
 def test_export_endpoint(mock_example, client):
     # Test POST with JSON data
-    mock_example.return_value = 'You posted: {"test": "data"}'
-    response = client.post('/api/export', data=json.dumps({"test": "data"}), content_type='application/json')
+    mock_example.return_value = "{'content': 'file_data'}"
+    response = client.post('/api/export', data=json.dumps([{'A1': 'data'}]), content_type='application/json')
     assert response.status_code == 200
-    assert response.data == b"You posted: {'test': 'data'}"
+    assert response.data == b"{'content': 'file_data'}"
 
     # Test POST with non-JSON data
     mock_example.return_value = 'Content-Type must be application/json'
-    response = client.post('/api/export', data='test data', content_type='text/plain')
+    response = client.post('/api/export', data='A1: data', content_type='text/plain')
     assert response.status_code == 400
     assert response.data == b'Content-Type must be application/json'
 
