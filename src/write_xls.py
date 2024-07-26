@@ -3,6 +3,7 @@ import time
 import shutil
 import os
 
+
 def create_workbook():
 
     # Create filename using timestamp
@@ -10,7 +11,7 @@ def create_workbook():
 
     # Copy the template file
     shutil.copy2("demo.xlsx", filename)
-    
+
     # Check if the file was copied successfully
     if os.path.exists(filename):
         return filename
@@ -18,10 +19,10 @@ def create_workbook():
     return False
 
 
-def write_to_file(filename, data: list):
+def write_to_workbook(filename, data: list):
 
     # Check if filename is valid and data is a list
-    if filename == False or type(data) != list:
+    if filename is False or not isinstance(data, list):
         return False
 
     # Open workbook
@@ -37,7 +38,7 @@ def write_to_file(filename, data: list):
         if not workbook.worksheets[worksheet_id]:
             print(f'Worksheet with id {worksheet_id} not found')
             break
-        
+
         # Select the worksheet to edit
         worksheet = workbook.worksheets[worksheet_id]
 
@@ -58,7 +59,7 @@ def write_to_file(filename, data: list):
 # Test functions
 
 if os.path.exists('demo.xlsx'):
-    print( write_to_file(create_workbook(), [{'A1': 'Hi', 'A2': 'there'}]) )
+    print( write_to_workbook(create_workbook(), [{'A1': 'Hi', 'A2': 'there'}]) )
 
 else:
     print('File not found')
