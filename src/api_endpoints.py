@@ -1,5 +1,6 @@
 import logging
 import time
+import json
 
 from datetime import timedelta
 from flask import Blueprint, Response, request
@@ -42,7 +43,7 @@ def export():
             job_duration_summary.labels(job_name='writexls', status='success').observe(duration.total_seconds())
             job_complete_counter.labels(job_name='writexls', status='success').inc()
 
-            return Response({'content': file_data}, status=200)
+            return Response(json.dumps({'content': file_data}), status=200)
         else:
             return Response('Content-Type must be application/json', status=400)
     else:
