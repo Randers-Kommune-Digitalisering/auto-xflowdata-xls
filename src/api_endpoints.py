@@ -14,43 +14,33 @@ api_endpoints = Blueprint('api', __name__, url_prefix='/api')
 # Any endpoints added here will be available at /api/<endpoint> - e.g. http://127.0.0.1:8080/api/example
 # Change the the example below to suit your needs + add more as needed
 
+# Set initial metrics
+is_ready_gauge.labels(error_type=None, job_name=POD_NAME).set(1)
+last_updated_gauge.set_to_current_time()
 
-@api_endpoints.route('/example', methods=['GET', 'POST'])
+@api_endpoints.route('/xflow', methods=['GET', 'POST'])
 def example():
     if request.method == 'POST':
         if request.headers.get('Content-Type') == 'application/json':
             payload = request.get_json()
 
-            # -- Example job with example use of metrics -- #
-            is_ready_gauge.labels(error_type='working', job_name=POD_NAME).set(0)
-            last_updated_gauge.set_to_current_time()
+            # Set metrics for the job
+            logger.info('Started job writexls')
+            job_start_counter.labels(job_name='writexls').inc()
 
-            job_start_counter.labels(job_name='example job').inc()
+            # Do job
+            print('Performing job writexls')
 
+            # Set metrics after completing job
+            logger.info('Completed job writexls')
             start_time = time.time()
-            logger.info('Doing important job - that somehow prevents the app from being ready')
             duration = timedelta(seconds=(time.time() - start_time))
 
-            job_duration_summary.labels(job_name='example job', status='success').observe(duration.total_seconds())
-            job_complete_counter.labels(job_name='example job', status='success').inc()
-
-            is_ready_gauge.labels(error_type=None, job_name=POD_NAME).set(1)
-            last_updated_gauge.set_to_current_time()
-            # --------------------------------------------- #
+            job_duration_summary.labels(job_name='writexls', status='success').observe(duration.total_seconds())
+            job_complete_counter.labels(job_name='writexls', status='success').inc()
 
             return Response(f'You posted: {payload}', status=200)
         else:
             return Response('Content-Type must be application/json', status=400)
-    else:
-        # -- Example job with example use of metrics -- #
-        job_start_counter.labels(job_name='another example job').inc()
-
-        start_time = time.time()
-        logger.info('Doing important job - that does NOT prevent the app from being ready')
-        duration = timedelta(seconds=(time.time() - start_time))
-
-        job_duration_summary.labels(job_name='another example job', status='success').observe(duration.total_seconds())
-        job_complete_counter.labels(job_name='another example job', status='success').inc()
-        # --------------------------------------------- #
-
-        return Response('Example response', status=200)
+    else
+        return Response('Method must be POST', status=400)
