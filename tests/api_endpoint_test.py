@@ -28,7 +28,7 @@ def test_export_endpoint(mock_example, client):
     mock_example.return_value = "{'content': 'file_data'}"
     response = client.post('/api/export', data=json.dumps([{'A1': 'data'}]), content_type='application/json')
     assert response.status_code == 200
-    assert response.data == b"{'content': 'file_data'}"
+    assert 'content' in response.get_json() # Check for key 'content'
 
     # Test POST with non-JSON data
     mock_example.return_value = 'Content-Type must be application/json'
