@@ -59,7 +59,7 @@ def write_to_workbook(filename, data: list):
 # Test functions
 
 if os.path.exists('demo.xlsx'):
-    print( write_to_workbook(create_workbook(), [{'A1': 'Hi', 'A2': 'there'}]) )
+    print(write_to_workbook(create_workbook(), [{'A1': 'Hi', 'A2': 'there'}]))
 
 else:
     print('File not found')
