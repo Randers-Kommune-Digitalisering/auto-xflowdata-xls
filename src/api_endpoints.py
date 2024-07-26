@@ -6,6 +6,7 @@ from flask import Blueprint, Response, request
 
 from utils.config import POD_NAME
 from utils.logging import is_ready_gauge, last_updated_gauge, job_start_counter, job_complete_counter, job_duration_summary
+from write_xls import write_to_workbook
 
 logger = logging.getLogger(__name__)
 api_endpoints = Blueprint('api', __name__, url_prefix='/api')
@@ -17,6 +18,7 @@ api_endpoints = Blueprint('api', __name__, url_prefix='/api')
 # Set initial metrics
 is_ready_gauge.labels(error_type=None, job_name=POD_NAME).set(1)
 last_updated_gauge.set_to_current_time()
+
 
 @api_endpoints.route('/export', methods=['GET', 'POST'])
 def export():
@@ -30,6 +32,7 @@ def export():
 
             # Do job
             print('Performing job writexls')
+            file_data = write_to_workbook(create_workbook(), payload)
 
             # Set metrics after completing job
             logger.info('Completed job writexls')
@@ -39,7 +42,7 @@ def export():
             job_duration_summary.labels(job_name='writexls', status='success').observe(duration.total_seconds())
             job_complete_counter.labels(job_name='writexls', status='success').inc()
 
-            return Response(f'You posted: {payload}', status=200)
+            return Response({'content': file_data}, status=200)
         else:
             return Response('Content-Type must be application/json', status=400)
     else:
